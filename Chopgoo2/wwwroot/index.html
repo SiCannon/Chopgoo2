@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>chop goo 2</title>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="[[client ID goes here]]">
+</head>
+<body>
+
+    <h4>chop-goo-2</h4>
+
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <script>
+        function onSignIn(googleUser) {
+            console.log('onSignIn: getBasicProfile()...');
+            var profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+
+            console.log('onSignIn: getAuthResponse()...');
+            var authResponse = googleUser.getAuthResponse();
+            var id_token = authResponse.id_token;
+            console.log(authResponse);
+            console.log('id_token: ' + id_token);
+
+            document.getElementById("auth-response").textContent = JSON.stringify(authResponse, null, 4);
+        }
+    </script>
+
+    <a href="#" onclick="signOut();">Sign out</a>
+    <script>
+        function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                console.log('User signed out.');
+                document.getElementById("auth-response").textContent = "signed out"
+            });
+        }
+    </script>
+
+    <h4>auth response</h4>
+    <pre id="auth-response"></pre>
+
+    <script>
+        function getData(url, displayId) {
+            var show = function () {
+                if (this.status == 200) {
+                    document.getElementById(displayId).textContent = this.response;
+                }
+                else {
+                    document.getElementById("error").innerHTML = this.response;
+                }
+            };
+            var xml = new XMLHttpRequest();
+            xml.addEventListener("load", show);
+            xml.open("GET", url);
+            xml.send();
+        }
+    </script>
+
+    <h4>public data</h4>
+    <button type="button" onClick="getData('api/Values', 'public-data')">get public data</button>
+    <pre id="public-data"></pre>
+
+    <h4>private data</h4>
+    <button type="button" onClick="getData('api/Values/private', 'private-data')">get private data</button>
+    <pre id="private-data"></pre>
+
+    <div id="error">
+    </div>
+</body>
+</html>
