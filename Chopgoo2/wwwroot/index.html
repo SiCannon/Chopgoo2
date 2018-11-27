@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <title>chop goo 2</title>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <meta name="google-signin-client_id" content="[[client ID goes here]]">
+    <meta name="google-signin-client_id" content="737143963460-m3bkv22u2qafbkjrpmhf7l7shneh873d.apps.googleusercontent.com">
 </head>
 <body>
 
@@ -22,9 +22,9 @@
 
             console.log('onSignIn: getAuthResponse()...');
             var authResponse = googleUser.getAuthResponse();
-            var id_token = authResponse.id_token;
+            window.id_token = authResponse.id_token;
             console.log(authResponse);
-            console.log('id_token: ' + id_token);
+            console.log('id_token: ' + window.id_token);
 
             document.getElementById("auth-response").textContent = JSON.stringify(authResponse, null, 4);
         }
@@ -57,6 +57,7 @@
             var xml = new XMLHttpRequest();
             xml.addEventListener("load", show);
             xml.open("GET", url);
+            xml.setRequestHeader("Authorization", "Bearer " + window.id_token);
             xml.send();
         }
     </script>
