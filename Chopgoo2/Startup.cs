@@ -45,6 +45,7 @@ namespace Chopgoo2
                 sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
                 //.AddCookie()
+                //.AddJwtBearer()
                 .AddOpenIdConnect(o =>
                 {
                     o.ClientId = Configuration["oidc:clientid"];

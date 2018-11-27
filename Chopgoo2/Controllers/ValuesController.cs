@@ -44,6 +44,7 @@ namespace Chopgoo2.Controllers
         }
 
         [Authorize]
+        //[Authorize(ActiveAuthenticationSchemes = "Bearer")]
         [HttpGet("private")]
         public ActionResult<IEnumerable<string>> GetPrivate()
         {
