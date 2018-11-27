@@ -37,15 +37,17 @@
             auth2.signOut().then(function () {
                 console.log('User signed out.');
                 document.getElementById("auth-response").textContent = "signed out"
+                window.id_token = null;
             });
         }
     </script>
 
     <h4>auth response</h4>
-    <pre id="auth-response"></pre>
+    <pre id="auth-response">none yet</pre>
 
     <script>
         function getData(url, displayId) {
+            document.getElementById(displayId).textContent = null;
             var show = function () {
                 if (this.status == 200) {
                     document.getElementById(displayId).textContent = this.response;
@@ -56,11 +58,19 @@
             };
             var xml = new XMLHttpRequest();
             xml.addEventListener("load", show);
+            xml.onreadystatechange = function () {
+                document.getElementById("readyState").textContent = xml.readyState.toString();
+                document.getElementById("status").textContent = xml.status.toString();
+            };
             xml.open("GET", url);
             xml.setRequestHeader("Authorization", "Bearer " + window.id_token);
             xml.send();
         }
     </script>
+
+    <h4>state</h4>
+    <pre>readyState = <span id="readyState">?</span>
+status = <span id="status">?</span></pre>
 
     <h4>public data</h4>
     <button type="button" onClick="getData('api/Values', 'public-data')">get public data</button>
