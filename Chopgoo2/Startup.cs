@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Chopgoo2
 {
@@ -36,6 +30,31 @@ namespace Chopgoo2
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            ConfigureJwtBearer(services);
+            //ConfigureOpenIdConnect(services);
+        }
+
+        private void ConfigureJwtBearer(IServiceCollection services)
+        {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(o =>
+                {
+                    o.Authority = Configuration["oidc:authority"];
+                    o.Audience = Configuration["oidc:clientid"];
+                    o.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuers = new List<string>
+                        {
+                            "https://accounts.google.com",
+                            "accounts.google.com"
+                        }
+                    };
+                });
+        }
+
+        // does not work
+        void ConfigureOpenIdConnect(IServiceCollection services)
+        {
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             services.AddAuthentication(sharedOptions =>
